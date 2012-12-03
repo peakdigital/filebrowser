@@ -3,14 +3,14 @@
 	<name>FileBrowser</name>
 	<description>Manage Files from within Symphony CMS</description>
 	<url type="discuss">http://symphony-cms.com/discuss/thread/86549/</url>
-	<repo type="github">https://bitbucket.org/andrewminton/filebrowser</repo>
+	<repo type="github">https://github.com/andrewminton/filebrowser</repo>
 	<types>
 		<type>Workflow</type>
 	</types>
 	<authors>
 		<author>
-			<name github="andrewminton" symphony="moonoo2">Andrew Minton</name>
-			<website>http://andrewminton.co.uk</website>
+			<name github="symphonists">Symphony Team</name>
+			<website>http://getsymphony.com</website>
 		</author>
 	</authors>
 	<releases>
