@@ -15,7 +15,7 @@
 			
 			if(!isset($_POST['action']['apply']) || empty($checked)) return;
 			
-			$FileManager = Symphony::ExtensionManager()->create('filbrowser');		
+			$FileManager = Symphony::ExtensionManager()->create('filebrowser');		
 			
 			switch($_POST['with-selected']){
 				
@@ -32,7 +32,7 @@
 							if(!@rmdir($abs_file))
 								$this->pageAlert(
 									__(
-										'%s could not be deleted as is still contains files.',
+										'%s could not be deleted as it still contains files.',
 										array('<code>'.$rel_file.'</code>')
 									),
 									AdministrationPage::PAGE_ALERT_ERROR
@@ -48,6 +48,16 @@
 					$path = (is_array($this->_context) && !empty($this->_context) ? '/' . implode('/', $this->_context) . '/' : NULL);
 					$filename = $FileManager->createArchive($checked, $path);
 					
+					break;
+
+				case 'extract';
+					//Abilty to Extract Zip file into current directory
+					$dir = (is_array($this->_context) && !empty($this->_context) ? '/' . implode('/', $this->_context) . '/' : NULL);
+					$path = DOCROOT . $FileManager->getStartLocation().$dir;
+					//var_dump($path,$this->_context);die;
+					//(is_array($this->_context) && !empty($this->_context) ? '/' . implode('/', $this->_context) . '/' : NULL);
+					//$filename = $FileManager->extractArchive($checked, $path);
+
 					break;
 					
 					
@@ -170,6 +180,7 @@
 			$options = array(
 				array(NULL, false, 'With Selected...'),
 				array('archive', false, 'Archive'),
+				array('extract', false, 'Extract'),
 				array('delete', false, 'Delete')									
 			);
 

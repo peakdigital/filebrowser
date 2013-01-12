@@ -191,26 +191,45 @@
 		
 		public function createArchive(array $files, $path=NULL){
 			
-			require_once(TOOLKIT . '/class.archivezip.php');
-			$archive = new ArchiveZip;
+
+			$archive = new ZipArchive;
 			
-			$flag = (Symphony::Configuration()->get('show-hidden', 'filebrowser') == 'yes' ? ArchiveZip::IGNORE_HIDDEN : NULL);
+			$flag = NULL;//(Symphony::Configuration()->get('show-hidden', 'filebrowser') == 'yes' ? ZipArchive::IGNORE_HIDDEN : NULL);
 			
 			$root = DOCROOT . $this->getStartLocation();
+
+			$zip_file = $root .'/' . str_replace('/', '', $files[0] .'.zip');
+
+			$archive->open($zip_file, ZipArchive::CREATE);
 			
 			foreach($files as $f){
 				
-				if(is_dir($root . $f)) $archive->addDirectory($root . $f, $root . rtrim($path, '/'), $flag);
-				else $archive->addFromFile($root . $f, basename($f));
+				if(is_dir($root . $f)) $archive->addEmptyDir($f);
+				else $archive->addFile($root . $f, $f);
 
 			}
-			
-			$zip_file = $root . rtrim($path, '/') . '/' . $this->findAvailableArchiveName($root . (count($files) > 1 || is_dir($root . $files[0]) ? rtrim($path, '/') : $f));
-			
-			$archive->save($zip_file);
-			
+
+			$archive->close($zip_file);
+
 			return (@file_exists($zip_file) ? $zip_file : NULL);
 			
+		}
+
+		public function extractArchive(array $files, $path){
+
+			$archive = new ZipArchive;
+
+			$archive->open($files);
+
+			if ($archive === TRUE){
+			$archive->extractTo($path);
+    		$archive->close();
+    			return TRUE;
+    		}else {
+    			return FALSE;
+
+    		}
+    		
 		}
 		
 		public function buildTableRow(DirectoryIterator $file, $includeParentDirectoryDots=true){
