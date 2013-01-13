@@ -203,7 +203,7 @@
 			
 			if($res === TRUE){
 
-				$this->__addFolderToArchive($archive,$root .'/'.$path, DOCROOT);
+				$this->__addFolderToArchive($archive,$root .'/'. $path, DOCROOT);
 			}
 
 			$archive->close($zip_file);
