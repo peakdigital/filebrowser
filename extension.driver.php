@@ -194,19 +194,16 @@
 
 			$archive = new ZipArchive;
 			
-			$flag = NULL;//(Symphony::Configuration()->get('show-hidden', 'filebrowser') == 'yes' ? ZipArchive::IGNORE_HIDDEN : NULL);
+			//$flag = NULL;//(Symphony::Configuration()->get('show-hidden', 'filebrowser') == 'yes' ? ZipArchive::IGNORE_HIDDEN : NULL);
 			
 			$root = DOCROOT . $this->getStartLocation();
 
-			$zip_file = $root .'/' . str_replace('/', '', $files[0] .'.zip');
-
-			$archive->open($zip_file, ZipArchive::CREATE);
+			$zip_file = $root .'/' . str_replace('/', '', $files[0] .'-archive.zip');
+			$res = $archive->open($zip_file, ZipArchive::CREATE);
 			
-			foreach($files as $f){
-				
-				if(is_dir($root . $f)) $archive->addEmptyDir($f);
-				else $archive->addFile($root . $f, $f);
+			if($res === TRUE){
 
+				$this->__addFolderToArchive($archive,$root .'/'.$path, DOCROOT);
 			}
 
 			$archive->close($zip_file);
@@ -215,23 +212,42 @@
 			
 		}
 
-		public function extractArchive(array $files, $path){
+		public function extractArchive(array $checked, $path){
 
-			$archive = new ZipArchive;
+			foreach($checked as $ar){
 
-			$archive->open($files);
-
-			if ($archive === TRUE){
-			$archive->extractTo($path);
-    		$archive->close();
-    			return TRUE;
-    		}else {
-    			return FALSE;
-
+				$archive = new ZipArchive;
+				$file = $path .'/' . basename($ar);
+				$res = $archive->open($file);
+				if($res === TRUE){
+				//var_dump('poop');
+				$archive->extractTo($path);
+	    		$archive->close();
+	    		//echo 'ok';
+	    		}else{
+	    			//var_dump('poop');
+	    			//echo 'Error';
+	    		}
     		}
-    		
+
 		}
 		
+		//Taken from Export Ensemble Extensions for building file and folder structure array to add to archive
+		private function __addFolderToArchive(&$archive, $path, $parent=NULL){
+			$iterator = new DirectoryIterator($path);
+			foreach($iterator as $file){
+				if($file->isDot() || preg_match('/^\./', $file->getFilename())) continue;
+
+				elseif($file->isDir()){
+					$this->__addFolderToArchive($archive, $file->getPathname(), $parent);
+				}
+
+				else $archive->addFile($file->getPathname(), ltrim(str_replace($parent, NULL, $file->getPathname()), '/'));
+			}
+		}
+
+
+
 		public function buildTableRow(DirectoryIterator $file, $includeParentDirectoryDots=true){
 
 			if(!$file->isDot() && substr($file->getFilename(), 0, 1) == '.' && Symphony::Configuration()->get('show-hidden', 'filebrowser') != 'yes') return;

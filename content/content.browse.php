@@ -54,9 +54,8 @@
 					//Abilty to Extract Zip file into current directory
 					$dir = (is_array($this->_context) && !empty($this->_context) ? '/' . implode('/', $this->_context) . '/' : NULL);
 					$path = DOCROOT . $FileManager->getStartLocation().$dir;
-					//var_dump($path,$this->_context);die;
-					//(is_array($this->_context) && !empty($this->_context) ? '/' . implode('/', $this->_context) . '/' : NULL);
-					//$filename = $FileManager->extractArchive($checked, $path);
+					$filename = $FileManager->extractArchive($checked,$path);
+					//var_dump($checked,$path);
 
 					break;
 					
