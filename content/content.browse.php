@@ -15,7 +15,7 @@
 			
 			if(!isset($_POST['action']['apply']) || empty($checked)) return;
 			
-			$FileManager = Symphony::ExtensionManager()->create('filbrowser');		
+			$FileManager = Symphony::ExtensionManager()->create('filebrowser');		
 			
 			switch($_POST['with-selected']){
 				
